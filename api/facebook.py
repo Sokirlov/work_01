@@ -23,7 +23,7 @@ class Facebook(Base):
     def __init__(self, key: str | None, **browsers_params) -> None:
         super().__init__(**browsers_params)
         self._key = key
-        self._base_login_url = 'https://www.facebook.com/login'
+        self._base_login_url = 'https://www.facebook.com/login/?locale=en_US'
         self.db = DatabaseConnection()
         self._cookies = None
         if self._key:
@@ -37,7 +37,7 @@ class Facebook(Base):
         request = SignUpRequest(self, login=login, password=password)
         return request.sign_up(email)
         
-    def get_apps_id(self, base_url: str = 'https://developers.facebook.com/apps/?show_reminder=true') -> list[int] | None:
+    def get_apps_id(self, base_url: str = 'https://developers.facebook.com/apps/?show_reminder=true&locale=en_US') -> list[int] | None:
         self.set_session(self._cookies, url=base_url)
         try:
             app_ids = self.find_by_selector(FaceBookSelector.app_id, one=False)
@@ -85,7 +85,7 @@ class Facebook(Base):
         return True
 
     def add_accounts_id(self, accs: list[str | int], app_id: int | str) -> bool:
-        url = f'https://developers.facebook.com/apps/{app_id}/settings/advanced/'
+        url = f'https://developers.facebook.com/apps/{app_id}/settings/advanced/?locale=en_US'
         self.set_session(self._cookies, url=url)
         print('Session start')
         try:
@@ -109,7 +109,7 @@ class Facebook(Base):
         return self._is_acc_added(added_accs=accs)
     
     def delete_accounts_id(self, accs: list[str | int], app_id: int | str) -> bool:
-        url = f'https://developers.facebook.com/apps/{app_id}/settings/advanced/'
+        url = f'https://developers.facebook.com/apps/{app_id}/settings/advanced/?locale=en_US'
         self.set_session(self._cookies, url=url)
         time.sleep(1)
         self._driver.save_screenshot(settings.path(('png_logs', '1-del.png')))
@@ -157,7 +157,7 @@ class Facebook(Base):
         return self._is_acc_deleted(deleted_accs=accs)
     
     def get_app_accounts(self, app_id: str | int) -> list[str | int]:
-        url = f'https://developers.facebook.com/apps/{app_id}/settings/advanced/'
+        url = f'https://developers.facebook.com/apps/{app_id}/settings/advanced/?locale=en_US'
         self.set_session(self._cookies, url=url)
         self._driver.execute_script('document.querySelector("body").scrollIntoView(0);')
         try:
