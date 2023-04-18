@@ -62,7 +62,7 @@ class SignUpRequest:
         self.fb._driver.save_screenshot(settings.path(('png_logs', 'after-credentials.png')))
         # check is login success
         time.sleep(3)
-        if not re.search(r'(?<=\>)Marketplace(?=\<)', driver.page_source):
+        if not re.search(r'<h1', driver.page_source):
             try:
                 elem = self.fb.find_by_selector(FaceBookSelector.check_login)
                 if not elem:
@@ -83,7 +83,8 @@ class SignUpRequest:
                     return self._resolve_confirmation(email=email_or_code)
                 else:
                     raise AuthFailedError('failed to auth')
-
+            except Exception as exl:
+                raise AuthFailedError(f'failed to auth {exl}')
         # saving sesison...
         time.sleep(4)
         self.fb._driver.save_screenshot(settings.path(('png_logs', 'to_save.png')))
