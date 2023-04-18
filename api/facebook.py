@@ -91,6 +91,7 @@ class Facebook(Base):
         try:
             form = self.find_by_selector(FaceBookSelector.input_accounts)
         except TimeoutException:
+            self._driver.save_screenshot('/errors-screens/TimeoutException.png')
             raise LoginIsRequiredError('Login is required')
         self._driver.execute_script('document.querySelector("body").scrollIntoView(0);')
         for elem in form.find_elements(By.CSS_SELECTOR, 'div'):
